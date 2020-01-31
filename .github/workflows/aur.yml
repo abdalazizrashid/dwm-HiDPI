@@ -11,13 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-      GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
+      GIT_SSH_COMMAND: "ssh -i key -o StrictHostKeyChecking=no"
     steps:
     - uses: actions/checkout@v2
     - name: configure
       run: |
-        eval "$(ssh-agent -s)"
-        ssh-add - <<< "${DEPLOY_KEY}"
+        echo "${DEPLOY_KEY}" > key
         git remote add aur ssh://aur.archlinux.org/st-highdpi-git.git
         makepkg --printsrcinfo > .SRCINFO
         git add .SRCINFO
