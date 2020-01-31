@@ -19,4 +19,7 @@ jobs:
         eval "$(ssh-agent -s)"
         ssh-add - <<< "${DEPLOY_KEY}"
         git remote add aur ssh://aur.archlinux.org/st-highdpi-git.git
-        git push aur master
+        makepkg --printsrcinfo > .SRCINFO
+        git add .SRCINFO
+        git commit -m 'update SRCINFO'
+        git push -f aur master
