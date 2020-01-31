@@ -13,12 +13,19 @@ jobs:
       DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
       GIT_SSH_COMMAND: "ssh -i key -o StrictHostKeyChecking=no"
     steps:
+    - uses: 2m/arch-pkgbuild-builder@v1
+      with:
+        target: 'pkgbuild'
+        pkgname: 'dwm-highdpi-git'
+
+    - uses: 2m/arch-pkgbuild-builder@v1
+      with:
+        target: 'srcinfo'
+        pkgname: 'dwm-highdpi-git'
     - uses: actions/checkout@v2
     - name: configure
       run: |
         echo "${DEPLOY_KEY}" > key
         git remote add aur ssh://aur.archlinux.org/st-highdpi-git.git
-        makepkg --printsrcinfo > .SRCINFO
-        git add .SRCINFO
         git commit -m 'update SRCINFO'
         git push -f aur master
