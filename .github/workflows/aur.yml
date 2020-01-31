@@ -9,8 +9,14 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+    env:
+      DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+      GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
     steps:
     - uses: actions/checkout@v2
     - name: configure
-      run: echo "acting"
+      run: |
+        eval "$(ssh-agent -s)"
+        ssh-add - <<< "${DEPLOY_KEY}"
+        git remote add aur ssh://aur.archlinux.org/st-highdpi-git.git
+        git push aur master
